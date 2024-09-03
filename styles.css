@@ -69,6 +69,7 @@ h1 {
 }
 
 #keyboard button {
+	font-weight: 300;
 	aspect-ratio: 1/1;
 	width: var(--width);
 	font-size: 2rem;
