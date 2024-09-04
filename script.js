@@ -2,6 +2,7 @@ const keyboard = document.querySelectorAll("#keyboard button");
 const display = document.querySelectorAll(".lines .letter");
 let wordEls = [];
 
+let line = 0;
 let cursor = 0;
 
 function onReady() {
@@ -18,18 +19,11 @@ function onReady() {
 			word = [];
 		}
 
-		word.push(display[i].innerHTML);
+		word.push(display[i]);
 	}
 }
 
 window.onload = onReady();
-
-function reset() {
-	cursor = 0;
-	for (let letter of display) {
-		letter.innerHTML = "";
-	}
-}
 
 function getStrWords() {
 	let words = [];
@@ -45,7 +39,7 @@ function getCurrentWord() {
 	let currentWord = "";
 
 	for (let word of words) {
-		if (word.length != 5) {
+		if (word.length == 0) {
 			break;
 		}
 		currentWord = word;
@@ -55,24 +49,43 @@ function getCurrentWord() {
 }
 
 function reset() {
+	line = 0;
 	cursor = 0;
+	for (let letter of display) {
+		letter.innerHTML = "";
+	}
 }
 
 function processInput(button) {
+	currentWord = getCurrentWord();
+
 	switch (button.id) {
 		case "enter":
+			//check word
+			console.log(currentWord); //broken
+			if (currentWord.length == 5) {
+				cursor = 0;
+				line++;
+			}
 			return;
 		case "delete":
+			wordEls[line][cursor].innerHTML = "";
+			if (cursor != 0) {
+				cursor--;
+			}
 			return;
 	}
 
-	display[cursor].innerHTML = button.innerHTML;
+	console.log(wordEls);
 
-	let word = getCurrentWord();
-	console.log(word);
+	//let word = getCurrentWord();
+	//console.log(word);
 
-	cursor++;
-	if (cursor > 29) {
-		reset();
+	if (wordEls[line][cursor].innerHTML.length == 0) {
+		wordEls[line][cursor].innerHTML = button.innerHTML;
+	}
+
+	if (cursor < 4) {
+		cursor++;
 	}
 }
