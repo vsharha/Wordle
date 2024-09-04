@@ -39,7 +39,7 @@ h1 {
 .letter {
 	aspect-ratio: 1/1;
 	width: 4rem;
-	border: 0.2rem solid gray;
+	border: 0.2rem solid rgb(201, 201, 201);
 	padding: 0.25rem;
 	font-size: 3rem;
 	text-align: center;
@@ -72,7 +72,23 @@ h1 {
 
 #keyboard button {
 	font-weight: 300;
-	aspect-ratio: 1/1;
+	aspect-ratio: 2/3;
 	width: var(--width);
 	font-size: 2rem;
+	border: none;
+	border-radius: 0.5rem;
+}
+
+#keyboard #enter {
+	font-size: 1rem;
+}
+
+#keyboard #enter,
+#keyboard #delete {
+	aspect-ratio: 1/1;
+	width: calc(var(--width) * 1.5 + var(--gap) / 2);
+}
+
+button:hover {
+	filter: brightness(90%);
 }
