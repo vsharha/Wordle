@@ -10,6 +10,10 @@
 html {
 	background: linear-gradient(rgb(255, 119, 142), rgb(255, 152, 169));
 	background-attachment: fixed;
+
+	--locked-color: rgb(90, 90, 90);
+	--correct-spot-color: rgb(61, 142, 61);
+	--wrong-spot-color: rgb(175, 175, 4);
 }
 
 #content {
@@ -38,11 +42,24 @@ h1 {
 
 .letter {
 	aspect-ratio: 1/1;
-	width: 4rem;
+	width: 5rem;
 	border: 0.2rem solid rgb(201, 201, 201);
-	padding: 0.25rem;
+	padding: 0.3rem;
 	font-size: 3rem;
 	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.entered {
+	border-color: black;
+}
+
+.guessed {
+	border: none;
+	color: white;
 }
 
 #keyboard {

@@ -1,9 +1,12 @@
 const keyboard = document.querySelectorAll("#keyboard button");
+const keyboardText = [];
 const display = document.querySelectorAll(".lines .letter");
-let wordEls = [];
+let wordElsArr = [];
 
 let line = 0;
 let cursor = 0;
+
+let todaysWord = "moped";
 
 function onReady() {
 	for (let button of keyboard) {
@@ -15,11 +18,15 @@ function onReady() {
 	let word = [];
 	for (let i = 0; i < display.length; i++) {
 		if (i % 5 == 0 && i != 0) {
-			wordEls.push(word);
+			wordElsArr.push(word);
 			word = [];
 		}
 
 		word.push(display[i]);
+	}
+
+	for (let button of keyboard) {
+		keyboardText.push(button.innerHTML);
 	}
 }
 
@@ -27,8 +34,14 @@ window.onload = onReady();
 
 function getStrWords() {
 	let words = [];
-	for (let word of wordEls) {
-		words.push(word.join(""));
+
+	let strWord = "";
+	for (let wordEls of wordElsArr) {
+		strWord = "";
+		for (let letter of wordEls) {
+			strWord += letter.innerHTML;
+		}
+		words.push(strWord);
 	}
 	return words;
 }
@@ -42,6 +55,7 @@ function getCurrentWord() {
 		if (word.length == 0) {
 			break;
 		}
+
 		currentWord = word;
 	}
 
@@ -53,6 +67,43 @@ function reset() {
 	cursor = 0;
 	for (let letter of display) {
 		letter.innerHTML = "";
+		letter.classList.remove(entered);
+		letter.style.background = "none";
+	}
+	for (let button of keyboard) {
+		button.classList.remove("guessed");
+	}
+}
+
+function getCSScolor(varName) {
+	return getComputedStyle(document.body).getPropertyValue(
+		"--" + varName + "-color"
+	);
+}
+
+function getButtonIndexes() {
+	let indexes = [];
+	let currentWord = getCurrentWord();
+
+	for (let letter of currentWord) {
+		let index = keyboardText.indexOf(letter);
+		if (index > -1 && !indexes.includes(index)) {
+			indexes.push(index);
+		}
+	}
+
+	return indexes;
+}
+
+function updateColors() {
+	for (let i = 0; i < 5; i++) {
+		wordElsArr[line][i].style.background = getCSScolor("locked");
+		wordElsArr[line][i].classList.add("guessed");
+	}
+
+	for (let i of getButtonIndexes()) {
+		keyboard[i].style.background = getCSScolor("locked");
+		keyboard[i].classList.add("guessed");
 	}
 }
 
@@ -61,31 +112,30 @@ function processInput(button) {
 
 	switch (button.id) {
 		case "enter":
-			//check word
-			console.log(currentWord); //broken
 			if (currentWord.length == 5) {
+				//check word
+				updateColors();
 				cursor = 0;
 				line++;
 			}
 			return;
 		case "delete":
-			wordEls[line][cursor].innerHTML = "";
-			if (cursor != 0) {
+			if (cursor > 0) {
 				cursor--;
 			}
+			wordElsArr[line][cursor].classList.remove("entered");
+			wordElsArr[line][cursor].innerHTML = "";
+
 			return;
 	}
-
-	console.log(wordEls);
 
 	//let word = getCurrentWord();
 	//console.log(word);
 
-	if (wordEls[line][cursor].innerHTML.length == 0) {
-		wordEls[line][cursor].innerHTML = button.innerHTML;
-	}
+	if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
+		wordElsArr[line][cursor].innerHTML = button.innerHTML;
+		wordElsArr[line][cursor].classList.add("entered");
 
-	if (cursor < 4) {
 		cursor++;
 	}
 }
