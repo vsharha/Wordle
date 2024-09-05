@@ -4,6 +4,7 @@
 	margin: 0;
 	padding: 0;
 
+	font-size: 0.9rem;
 	font-family: "Libre Franklin", sans-serif;
 	font-weight: 600;
 }
@@ -91,21 +92,28 @@ h1 {
 
 #keyboard button {
 	background: rgb(213, 213, 213);
-	aspect-ratio: 2/3;
+	aspect-ratio: 3/4;
 	width: var(--width);
 	font-size: 2rem;
 	border: none;
-	border-radius: 0.5rem;
+	border-radius: 0.3rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 #keyboard #enter {
-	font-size: 1.25rem;
-	font-weight: bold;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+#keyboard #delete i {
+	font-size: 1.8rem;
 }
 
 #keyboard #enter,
 #keyboard #delete {
-	aspect-ratio: 1/1;
+	aspect-ratio: 6/5;
 	width: calc(var(--width) * 1.5 + var(--gap) / 2);
 }
 
