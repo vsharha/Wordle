@@ -1,6 +1,7 @@
 const keyboard = document.querySelectorAll("#keyboard button");
 const keyboardText = [];
-const display = document.querySelectorAll(".lines .letter");
+const allWordEls = document.querySelectorAll(".lines .letter");
+const display = document.querySelector("#win-display");
 let wordElsArr = [];
 
 let allowInput = true;
@@ -16,12 +17,16 @@ function onReady() {
 		});
 	}
 
+	display.querySelector("button").addEventListener("click", function () {
+		reset();
+	});
+
 	let word = [];
-	for (let i = 0; i < display.length; i += 5) {
+	for (let i = 0; i < allWordEls.length; i += 5) {
 		word = [];
 
 		for (let j = 0; j < 5; j++) {
-			word.push(display[i + j]);
+			word.push(allWordEls[i + j]);
 		}
 
 		wordElsArr.push(word);
@@ -79,7 +84,7 @@ function getCurrentWord() {
 function reset() {
 	line = 0;
 	cursor = 0;
-	for (let letter of display) {
+	for (let letter of allWordEls) {
 		letter.classList.remove("guessed");
 		letter.innerHTML = "";
 		letter.style.background = "none";
@@ -89,6 +94,7 @@ function reset() {
 		button.style.background = getCSScolor("button");
 	}
 	allowInput = true;
+	display.style.display = "none";
 }
 
 function getCSScolor(varName) {
@@ -116,13 +122,17 @@ function checkWin() {
 
 	let color = "";
 	let lineColors = [];
-	let correctCount = 0;
+
+	let correctSpotLetters = [];
 
 	for (let i = 0; i < 5; i++) {
 		if (currentWord[i] == todaysWord[i]) {
-			correctCount++;
+			correctSpotLetters.push(currentWord[i]);
 			color = "correct-spot";
-		} else if (todaysWord.includes(currentWord[i])) {
+		} else if (
+			todaysWord.includes(currentWord[i]) &&
+			!correctSpotLetters.includes(currentWord[i])
+		) {
 			color = "wrong-spot";
 		} else {
 			color = "locked";
@@ -151,7 +161,7 @@ function checkWin() {
 		keyboard[indexes[i]].classList.add("guessed");
 	}
 
-	if (correctCount == 5) {
+	if (correctSpotLetters.length == 5) {
 		return true;
 	}
 	return false;
@@ -174,6 +184,13 @@ function processInput(button) {
 	gameLoop(input);
 }
 
+function showMessage(message) {
+	allowInput = false;
+
+	display.style.display = "flex";
+	display.querySelector("h1").innerHTML = message;
+}
+
 function gameLoop(input) {
 	if (!allowInput) {
 		return;
@@ -187,16 +204,14 @@ function gameLoop(input) {
 				console.log(currentWord);
 				//check word
 				if (checkWin()) {
-					allowInput = false;
-
-					alert("You guessed it!");
+					showMessage("You guessed the word!");
 				}
 				cursor = 0;
 				line++;
-			}
 
-			if (line > 5) {
-				allowInput = false;
+				if (line > 5) {
+					showMessage("You didn't guess it!");
+				}
 			}
 			break;
 		case "Backspace":
