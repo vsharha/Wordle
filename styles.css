@@ -193,6 +193,12 @@ button:hover {
 		padding: none;
 		margin: none;
 	}
-	#keyboard {
+	#message {
+	}
+	#message h1 {
+		font-size: 2.5rem;
+	}
+	#message button {
+		font-size: 3rem;
 	}
 }
