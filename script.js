@@ -34,6 +34,30 @@ function onReady() {
 
 window.onload = onReady();
 
+window.addEventListener(
+	"keydown",
+	function (event) {
+		if (event.defaultPrevented) {
+			return;
+		}
+
+		let input = "";
+
+		if (event.key.length == 1 && event.key.match(/[a-z]/i)) {
+			input = event.key.toUpperCase();
+		} else if (event.key == "Enter" || event.key == "Backspace") {
+			input = event.key;
+		} else {
+			return;
+		}
+
+		gameLoop(input);
+
+		event.preventDefault();
+	},
+	true
+);
+
 function getStrWords() {
 	let words = [];
 
@@ -144,6 +168,23 @@ function checkWin() {
 }
 
 function processInput(button) {
+	let input = "";
+
+	switch (button.id) {
+		case "enter":
+			input = "Enter";
+			break;
+		case "delete":
+			input = "Backspace";
+			break;
+		default:
+			input = button.innerHTML;
+	}
+
+	gameLoop(input);
+}
+
+function gameLoop(input) {
 	if (line > 5) {
 		allowInput = false;
 	}
@@ -154,8 +195,8 @@ function processInput(button) {
 
 	currentWord = getCurrentWord();
 
-	switch (button.id) {
-		case "enter":
+	switch (input) {
+		case "Enter":
 			if (currentWord.length == 5) {
 				console.log(currentWord);
 				//check word
@@ -167,24 +208,20 @@ function processInput(button) {
 				cursor = 0;
 				line++;
 			}
-			return;
-		case "delete":
+			break;
+		case "Backspace":
 			if (cursor > 0) {
 				cursor--;
 			}
 			wordElsArr[line][cursor].classList.remove("entered");
 			wordElsArr[line][cursor].innerHTML = "";
+			break;
+		default:
+			if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
+				wordElsArr[line][cursor].innerHTML = input;
+				wordElsArr[line][cursor].classList.add("entered");
 
-			return;
-	}
-
-	//let word = getCurrentWord();
-	//console.log(word);
-
-	if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
-		wordElsArr[line][cursor].innerHTML = button.innerHTML;
-		wordElsArr[line][cursor].classList.add("entered");
-
-		cursor++;
+				cursor++;
+			}
 	}
 }
