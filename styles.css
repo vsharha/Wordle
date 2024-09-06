@@ -152,8 +152,13 @@ button:hover {
 	bottom: 0;
 }
 
-#message h1 {
+#message h2 {
+	font-size: 3rem;
 	font-weight: 600;
+}
+
+#message h1 {
+	font-weight: 500;
 	font-size: 2rem;
 }
 

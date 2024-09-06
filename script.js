@@ -10,12 +10,14 @@ let cursor = 0;
 
 let todaysWord = "MOPED";
 
-function onReady() {
+async function onReady() {
 	for (let button of keyboard) {
 		button.addEventListener("click", function () {
 			processInput(this);
 		});
 	}
+
+	todaysWord = await getNewWord();
 
 	display.querySelector("button").addEventListener("click", function () {
 		reset();
@@ -63,6 +65,15 @@ window.addEventListener(
 	true
 );
 
+async function getNewWord() {
+	const response = await fetch(
+		"https://random-word-api.herokuapp.com/word?length=5"
+	);
+	const data = await response.json();
+
+	return data[0].toUpperCase();
+}
+
 function getStrWords() {
 	let words = [];
 
@@ -81,7 +92,7 @@ function getCurrentWord() {
 	return getStrWords()[line];
 }
 
-function reset() {
+async function reset() {
 	line = 0;
 	cursor = 0;
 	for (let letter of allWordEls) {
@@ -95,6 +106,7 @@ function reset() {
 	}
 	allowInput = true;
 	display.style.display = "none";
+	todaysWord = await getNewWord();
 }
 
 function getCSScolor(varName) {
@@ -189,6 +201,7 @@ function showMessage(message) {
 
 	display.style.display = "flex";
 	display.querySelector("h1").innerHTML = message;
+	display.querySelector("h2").innerHTML = todaysWord;
 }
 
 function gameLoop(input) {
@@ -201,7 +214,6 @@ function gameLoop(input) {
 	switch (input) {
 		case "Enter":
 			if (currentWord.length == 5) {
-				console.log(currentWord);
 				//check word
 				if (checkWin()) {
 					showMessage("You guessed the word!");
