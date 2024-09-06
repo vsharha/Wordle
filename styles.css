@@ -16,6 +16,8 @@ html {
 	--correct-spot-color: rgb(74, 161, 74);
 	--wrong-spot-color: rgb(191, 170, 66);
 
+	--button-color: rgb(213, 213, 213);
+
 	--keyboard-height: 3;
 }
 
@@ -112,7 +114,7 @@ header h1 {
 }
 
 #keyboard button {
-	background: rgb(213, 213, 213);
+	background: var(--button-color);
 	aspect-ratio: 3/4;
 	width: var(--width);
 	font-size: 2rem;

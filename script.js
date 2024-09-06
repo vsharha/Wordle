@@ -74,32 +74,21 @@ function getStrWords() {
 
 function getCurrentWord() {
 	return getStrWords()[line];
-	// words = getStrWords();
-
-	// let currentWord = "";
-
-	// for (let word of words) {
-	// 	if (word.length == 0) {
-	// 		break;
-	// 	}
-
-	// 	currentWord = word;
-	// }
-
-	// return currentWord;
 }
 
 function reset() {
 	line = 0;
 	cursor = 0;
 	for (let letter of display) {
+		letter.classList.remove("guessed");
 		letter.innerHTML = "";
-		letter.classList.remove(entered);
 		letter.style.background = "none";
 	}
 	for (let button of keyboard) {
 		button.classList.remove("guessed");
+		button.style.background = getCSScolor("button");
 	}
+	allowInput = true;
 }
 
 function getCSScolor(varName) {
@@ -141,6 +130,7 @@ function checkWin() {
 
 		wordElsArr[line][i].style.background = getCSScolor(color);
 		wordElsArr[line][i].classList.add("guessed");
+		wordElsArr[line][i].classList.remove("entered");
 
 		lineColors.push(color);
 	}
@@ -185,10 +175,6 @@ function processInput(button) {
 }
 
 function gameLoop(input) {
-	if (line > 5) {
-		allowInput = false;
-	}
-
 	if (!allowInput) {
 		return;
 	}
@@ -207,6 +193,10 @@ function gameLoop(input) {
 				}
 				cursor = 0;
 				line++;
+			}
+
+			if (line > 5) {
+				allowInput = false;
 			}
 			break;
 		case "Backspace":
