@@ -14,8 +14,8 @@ html {
 	background-attachment: fixed;
 
 	--locked-color: rgb(123, 123, 123);
-	--correct-spot-color: rgb(61, 142, 61);
-	--wrong-spot-color: rgb(175, 175, 4);
+	--correct-spot-color: rgb(74, 161, 74);
+	--wrong-spot-color: rgb(191, 170, 66);
 }
 
 #content {

@@ -3,10 +3,11 @@ const keyboardText = [];
 const display = document.querySelectorAll(".lines .letter");
 let wordElsArr = [];
 
+let allowInput = true;
 let line = 0;
 let cursor = 0;
 
-let todaysWord = "moped";
+let todaysWord = "MOPED";
 
 function onReady() {
 	for (let button of keyboard) {
@@ -16,13 +17,14 @@ function onReady() {
 	}
 
 	let word = [];
-	for (let i = 0; i < display.length; i++) {
-		if (i % 5 == 0 && i != 0) {
-			wordElsArr.push(word);
-			word = [];
+	for (let i = 0; i < display.length; i += 5) {
+		word = [];
+
+		for (let j = 0; j < 5; j++) {
+			word.push(display[i + j]);
 		}
 
-		word.push(display[i]);
+		wordElsArr.push(word);
 	}
 
 	for (let button of keyboard) {
@@ -47,19 +49,20 @@ function getStrWords() {
 }
 
 function getCurrentWord() {
-	words = getStrWords();
+	return getStrWords()[line];
+	// words = getStrWords();
 
-	let currentWord = "";
+	// let currentWord = "";
 
-	for (let word of words) {
-		if (word.length == 0) {
-			break;
-		}
+	// for (let word of words) {
+	// 	if (word.length == 0) {
+	// 		break;
+	// 	}
 
-		currentWord = word;
-	}
+	// 	currentWord = word;
+	// }
 
-	return currentWord;
+	// return currentWord;
 }
 
 function reset() {
@@ -87,7 +90,7 @@ function getButtonIndexes() {
 
 	for (let letter of currentWord) {
 		let index = keyboardText.indexOf(letter);
-		if (index > -1 && !indexes.includes(index)) {
+		if (index > -1) {
 			indexes.push(index);
 		}
 	}
@@ -95,26 +98,72 @@ function getButtonIndexes() {
 	return indexes;
 }
 
-function updateColors() {
+function checkWin() {
+	let currentWord = getCurrentWord();
+
+	let color = "";
+	let lineColors = [];
+	let correctCount = 0;
+
 	for (let i = 0; i < 5; i++) {
-		wordElsArr[line][i].style.background = getCSScolor("locked");
+		if (currentWord[i] == todaysWord[i]) {
+			correctCount++;
+			color = "correct-spot";
+		} else if (todaysWord.includes(currentWord[i])) {
+			color = "wrong-spot";
+		} else {
+			color = "locked";
+		}
+
+		wordElsArr[line][i].style.background = getCSScolor(color);
 		wordElsArr[line][i].classList.add("guessed");
+
+		lineColors.push(color);
 	}
 
-	for (let i of getButtonIndexes()) {
-		keyboard[i].style.background = getCSScolor("locked");
-		keyboard[i].classList.add("guessed");
+	let indexes = getButtonIndexes();
+
+	for (let i = 0; i < 5; i++) {
+		let buttonColor = keyboard[indexes[i]].style.backgroundColor;
+
+		if (buttonColor == getCSScolor("correct-spot")) {
+			continue;
+		} else if (buttonColor == getCSScolor("wrong-spot")) {
+			if (lineColors[i] != "correct-spot") {
+				continue;
+			}
+		}
+		keyboard[indexes[i]].style.background = getCSScolor(lineColors[i]);
+		keyboard[indexes[i]].classList.add("guessed");
 	}
+
+	if (correctCount == 5) {
+		return true;
+	}
+	return false;
 }
 
 function processInput(button) {
+	if (line > 5) {
+		allowInput = false;
+	}
+
+	if (!allowInput) {
+		return;
+	}
+
 	currentWord = getCurrentWord();
 
 	switch (button.id) {
 		case "enter":
 			if (currentWord.length == 5) {
+				console.log(currentWord);
 				//check word
-				updateColors();
+				if (checkWin()) {
+					allowInput = false;
+
+					alert("You guessed it!");
+				}
 				cursor = 0;
 				line++;
 			}
