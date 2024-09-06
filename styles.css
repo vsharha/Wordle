@@ -10,25 +10,30 @@
 }
 
 html {
-	background: linear-gradient(rgb(255, 119, 142), rgb(255, 152, 169));
 	background-attachment: fixed;
 
 	--locked-color: rgb(123, 123, 123);
 	--correct-spot-color: rgb(74, 161, 74);
 	--wrong-spot-color: rgb(191, 170, 66);
+
+	--keyboard-height: 3;
 }
 
 #content {
+	height: 100vh;
 	background: white;
 	margin: auto;
-	margin-top: 1rem;
-	padding: 1rem;
-	width: 70rem;
-	padding: 2rem;
 	border-radius: 1rem;
+	max-width: 70rem;
 }
 
-h1 {
+header {
+	margin: auto;
+	width: ;
+	margin-bottom: 2rem;
+}
+header h1 {
+	padding: 1rem;
 	text-align: center;
 	font-size: 4rem;
 }
@@ -64,14 +69,30 @@ h1 {
 	color: white;
 }
 
-#keyboard {
-	width: 60%;
+#display {
 	margin: auto;
-	margin-top: 5rem;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#keyboard-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#keyboard {
+	width: 25vw;
+	min-width: 35rem;
+	margin-top: 6rem;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
+	position: fixed;
+	bottom: 3rem;
 
 	--gap: 0.5rem;
 	--items: 10;
@@ -107,16 +128,36 @@ h1 {
 	font-weight: 600;
 }
 
-#keyboard #delete i {
-	font-size: 1.8rem;
+#keyboard #delete img {
+	height: 2rem;
 }
 
 #keyboard #enter,
 #keyboard #delete {
-	aspect-ratio: 6/5;
+	aspect-ratio: 11.5/10;
 	width: calc(var(--width) * 1.5 + var(--gap) / 2);
 }
 
 button:hover {
 	filter: brightness(90%);
+}
+
+@media screen and (max-width: 576px) {
+	* {
+		font-size: 0.6rem;
+	}
+	#keyboard-container {
+		min-width: 100vw;
+	}
+	#keyboard {
+		min-width: 95%;
+		position: fixed;
+	}
+	#content {
+		min-width: 100vw;
+	}
+	.lines {
+		padding: none;
+		margin: none;
+	}
 }
