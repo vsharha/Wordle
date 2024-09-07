@@ -129,32 +129,70 @@ function getButtonIndexes() {
 	return indexes;
 }
 
+function instancesBefore(word, index) {
+	let count = 0;
+
+	for (let i = 0; i < index; i++) {
+		if (word[i] == word[index]) {
+			count++;
+		}
+	}
+
+	return count;
+}
+
 function checkWin() {
 	let currentWord = getCurrentWord();
 
-	let color = "";
 	let lineColors = [];
-
-	let correctSpotLetters = [];
 
 	for (let i = 0; i < 5; i++) {
 		if (currentWord[i] == todaysWord[i]) {
-			correctSpotLetters.push(currentWord[i]);
-			color = "correct-spot";
-		} else if (
-			todaysWord.includes(currentWord[i]) &&
-			!correctSpotLetters.includes(currentWord[i])
-		) {
-			color = "wrong-spot";
+			lineColors.push("correct-spot");
+		} else if (todaysWord.includes(currentWord[i])) {
+			lineColors.push("wrong-spot");
 		} else {
-			color = "locked";
+			lineColors.push("locked");
+		}
+	}
+
+	let count = 0;
+	let currentInstance = 0;
+
+	for (let i = 0; i < 5; i++) {
+		count = 0;
+		currentInstance = 0;
+
+		if (lineColors[i] == "wrong-spot") {
+			for (let j = 0; j < 5; j++) {
+				if (currentWord[i] == todaysWord[j]) {
+					count++;
+				}
+			}
+
+			for (let j = 0; j < 5; j++) {
+				if (currentWord[i] == currentWord[j]) {
+					if (
+						lineColors[j] == "correct-spot" ||
+						lineColors[j] == "wrong-spot"
+					) {
+						currentInstance++;
+					}
+
+					if (currentInstance > count && i >= j) {
+						lineColors[i] = "locked";
+					}
+				}
+			}
+
+			if (instancesBefore(currentWord, i) >= count) {
+				lineColors[i] == "locked";
+			}
 		}
 
-		wordElsArr[line][i].style.background = getCSScolor(color);
+		wordElsArr[line][i].style.background = getCSScolor(lineColors[i]);
 		wordElsArr[line][i].classList.add("guessed");
 		wordElsArr[line][i].classList.remove("entered");
-
-		lineColors.push(color);
 	}
 
 	let indexes = getButtonIndexes();
@@ -173,9 +211,18 @@ function checkWin() {
 		keyboard[indexes[i]].classList.add("guessed");
 	}
 
-	if (correctSpotLetters.length == 5) {
+	let correctCount = 0;
+
+	for (let color of lineColors) {
+		if (color == "correct-spot") {
+			correctCount++;
+		}
+	}
+
+	if (correctCount == 5) {
 		return true;
 	}
+
 	return false;
 }
 
