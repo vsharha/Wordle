@@ -179,7 +179,7 @@ function checkWin() {
 						currentInstance++;
 					}
 
-					if (currentInstance > count && i >= j) {
+					if (currentInstance > count) {
 						lineColors[i] = "locked";
 					}
 				}
