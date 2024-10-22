@@ -1,8 +1,10 @@
-const keyboard = document.querySelectorAll("#keyboard button");
-const keyboardText = [];
-const allWordEls = document.querySelectorAll(".lines .letter");
-const display = document.querySelector("#win-display");
-let wordElsArr = [];
+const keyboard: NodeListOf<HTMLElement> =
+	document.querySelectorAll("#keyboard button");
+const keyboardText: Array<string> = [];
+const allWordEls: NodeListOf<HTMLElement> =
+	document.querySelectorAll(".lines .letter");
+const display: HTMLElement = document.querySelector("#win-display");
+let wordElsArr: Array<Array<HTMLElement>> = [];
 
 let allowInput = true;
 let line = 0;
@@ -23,7 +25,7 @@ async function onReady() {
 		reset();
 	});
 
-	let word = [];
+	let word: Array<HTMLElement>;
 	for (let i = 0; i < allWordEls.length; i += 5) {
 		word = [];
 
@@ -39,7 +41,7 @@ async function onReady() {
 	}
 }
 
-window.onload = onReady();
+window.onload = onReady;
 
 window.addEventListener(
 	"keydown",
@@ -89,7 +91,7 @@ function getStrWords() {
 }
 
 function getCurrentWord() {
-	return getStrWords()[line];
+	return getStrWords()[line] as string;
 }
 
 async function reset() {
@@ -109,7 +111,7 @@ async function reset() {
 	todaysWord = await getNewWord();
 }
 
-function getCSScolor(varName) {
+function getCSScolor(varName: string) {
 	return getComputedStyle(document.body).getPropertyValue(
 		"--" + varName + "-color"
 	);
@@ -129,7 +131,7 @@ function getButtonIndexes() {
 	return indexes;
 }
 
-function instancesBefore(word, index) {
+function instancesBefore(word: string, index: number) {
 	let count = 0;
 
 	for (let i = 0; i < index; i++) {
@@ -226,7 +228,7 @@ function checkWin() {
 	return false;
 }
 
-function processInput(button) {
+function processInput(button: HTMLElement) {
 	let input = "";
 
 	switch (button.id) {
@@ -243,7 +245,7 @@ function processInput(button) {
 	gameLoop(input);
 }
 
-function showMessage(message) {
+function showMessage(message: string) {
 	allowInput = false;
 
 	display.style.display = "flex";
@@ -251,12 +253,12 @@ function showMessage(message) {
 	display.querySelector("h2").innerHTML = todaysWord;
 }
 
-function gameLoop(input) {
+function gameLoop(input: string) {
 	if (!allowInput) {
 		return;
 	}
 
-	currentWord = getCurrentWord();
+	let currentWord = getCurrentWord();
 
 	switch (input) {
 		case "Enter":
