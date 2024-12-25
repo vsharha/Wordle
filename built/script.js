@@ -12,6 +12,7 @@ const keyboardText = [];
 const allWordEls = document.querySelectorAll(".lines .line .letter");
 const display = document.querySelector("#win-display");
 let wordElsArr = [];
+let guessedWords = [];
 let allowInput = true;
 let line = 0;
 let cursor = 0;
@@ -238,16 +239,19 @@ function gameLoop(input) {
         let currentWord = getCurrentWord();
         switch (input) {
             case "Enter":
-                if (!(yield checkWord(currentWord))) {
+                if (!(currentWord.length == 5) ||
+                    guessedWords.includes(currentWord) ||
+                    !(yield checkWord(currentWord))) {
                     let currentLineEl = wordElsArr[line][0].parentElement;
                     animate(currentLineEl, "shake");
                 }
-                else if (currentWord.length == 5) {
+                else {
                     if (checkWin()) {
                         showMessage("You guessed the word!");
                     }
                     cursor = 0;
                     line++;
+                    guessedWords.push(currentWord);
                     if (line > 5) {
                         showMessage("You didn't guess it!");
                     }

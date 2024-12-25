@@ -6,6 +6,7 @@ const allWordEls: NodeListOf<HTMLElement> = document.querySelectorAll(
 );
 const display: HTMLElement = document.querySelector("#win-display");
 let wordElsArr: Array<Array<HTMLElement>> = [];
+let guessedWords: Array<String> = [];
 
 let allowInput = true;
 let line = 0;
@@ -284,15 +285,20 @@ async function gameLoop(input: string) {
 
 	switch (input) {
 		case "Enter":
-			if (!(await checkWord(currentWord))) {
+			if (
+				!(currentWord.length == 5) ||
+				guessedWords.includes(currentWord) ||
+				!(await checkWord(currentWord))
+			) {
 				let currentLineEl = wordElsArr[line][0].parentElement;
 				animate(currentLineEl, "shake");
-			} else if (currentWord.length == 5) {
+			} else {
 				if (checkWin()) {
 					showMessage("You guessed the word!");
 				}
 				cursor = 0;
 				line++;
+				guessedWords.push(currentWord);
 
 				if (line > 5) {
 					showMessage("You didn't guess it!");

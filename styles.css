@@ -16,15 +16,15 @@
 	}
 	25%,
 	75% {
-		transform: translateX(-0.75rem);
+		transform: translateX(-0.5rem);
 	}
 	50% {
-		transform: translateX(0.75rem);
+		transform: translateX(0.5rem);
 	}
 }
 
 .shake {
-	animation: shake 0.35s ease-in-out;
+	animation: shake 0.3s ease-in-out;
 }
 
 @keyframes bounce {
