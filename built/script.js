@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const keyboard = document.querySelectorAll("#keyboard button");
 const keyboardText = [];
-const allWordEls = document.querySelectorAll(".lines .letter");
+const allWordEls = document.querySelectorAll(".lines .line .letter");
 const display = document.querySelector("#win-display");
 let wordElsArr = [];
 let allowInput = true;
@@ -27,11 +27,16 @@ function onReady() {
         display.querySelector("button").addEventListener("click", function () {
             reset();
         });
+        const linesEl = document.querySelector(".lines");
         let word;
         for (let i = 0; i < allWordEls.length; i += 5) {
             word = [];
+            // let lineEl = document.createElement("div");
+            // lineEl.classList.add("line");
+            // linesEl.appendChild(lineEl);
             for (let j = 0; j < 5; j++) {
                 word.push(allWordEls[i + j]);
+                // lineEl.appendChild(allWordEls[i + j]);
             }
             wordElsArr.push(word);
         }
@@ -58,6 +63,16 @@ window.addEventListener("keydown", function (event) {
     gameLoop(input);
     event.preventDefault();
 }, true);
+const checkWord = (word) => __awaiter(this, void 0, void 0, function* () {
+    const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+    try {
+        const response = yield fetch(url);
+        return response.ok;
+    }
+    catch (error) {
+        return false;
+    }
+});
 function getNewWord() {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield fetch("https://random-word-api.herokuapp.com/word?length=5");
@@ -210,37 +225,48 @@ function showMessage(message) {
     display.querySelector("h1").innerHTML = message;
     display.querySelector("h2").innerHTML = todaysWord;
 }
+function animate(el, animation) {
+    el.classList.remove(animation);
+    void el.offsetWidth;
+    el.classList.add(animation);
+}
 function gameLoop(input) {
-    if (!allowInput) {
-        return;
-    }
-    let currentWord = getCurrentWord();
-    switch (input) {
-        case "Enter":
-            if (currentWord.length == 5) {
-                //check word
-                if (checkWin()) {
-                    showMessage("You guessed the word!");
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!allowInput) {
+            return;
+        }
+        let currentWord = getCurrentWord();
+        switch (input) {
+            case "Enter":
+                if (!(yield checkWord(currentWord))) {
+                    let currentLineEl = wordElsArr[line][0].parentElement;
+                    animate(currentLineEl, "shake");
                 }
-                cursor = 0;
-                line++;
-                if (line > 5) {
-                    showMessage("You didn't guess it!");
+                else if (currentWord.length == 5) {
+                    if (checkWin()) {
+                        showMessage("You guessed the word!");
+                    }
+                    cursor = 0;
+                    line++;
+                    if (line > 5) {
+                        showMessage("You didn't guess it!");
+                    }
                 }
-            }
-            break;
-        case "Backspace":
-            if (cursor > 0) {
-                cursor--;
-            }
-            wordElsArr[line][cursor].classList.remove("entered");
-            wordElsArr[line][cursor].innerHTML = "";
-            break;
-        default:
-            if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
-                wordElsArr[line][cursor].innerHTML = input;
-                wordElsArr[line][cursor].classList.add("entered");
-                cursor++;
-            }
-    }
+                break;
+            case "Backspace":
+                if (cursor > 0) {
+                    cursor--;
+                }
+                wordElsArr[line][cursor].classList.remove("entered");
+                wordElsArr[line][cursor].innerHTML = "";
+                break;
+            default:
+                if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
+                    wordElsArr[line][cursor].innerHTML = input;
+                    wordElsArr[line][cursor].classList.add("entered");
+                    animate(wordElsArr[line][cursor], "bounce");
+                    cursor++;
+                }
+        }
+    });
 }

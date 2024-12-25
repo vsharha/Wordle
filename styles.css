@@ -9,6 +9,38 @@
 	font-weight: 600;
 }
 
+@keyframes shake {
+	0%,
+	100% {
+		transform: translateX(0);
+	}
+	25%,
+	75% {
+		transform: translateX(-0.75rem);
+	}
+	50% {
+		transform: translateX(0.75rem);
+	}
+}
+
+.shake {
+	animation: shake 0.35s ease-in-out;
+}
+
+@keyframes bounce {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+}
+
+.bounce {
+	animation: bounce 0.1s ease-in-out;
+}
+
 html {
 	background-attachment: fixed;
 
@@ -45,10 +77,16 @@ header h1 {
 .lines {
 	padding: 2rem;
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
 	margin: auto;
 	width: fit-content;
 	gap: 0.5rem;
+}
+
+.line {
+	display: flex;
+	gap: 0.5rem;
+	justify-content: center;
+	align-items: center;
 }
 
 .letter {

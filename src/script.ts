@@ -1,8 +1,9 @@
 const keyboard: NodeListOf<HTMLElement> =
 	document.querySelectorAll("#keyboard button");
 const keyboardText: Array<string> = [];
-const allWordEls: NodeListOf<HTMLElement> =
-	document.querySelectorAll(".lines .letter");
+const allWordEls: NodeListOf<HTMLElement> = document.querySelectorAll(
+	".lines .line .letter"
+);
 const display: HTMLElement = document.querySelector("#win-display");
 let wordElsArr: Array<Array<HTMLElement>> = [];
 
@@ -25,12 +26,17 @@ async function onReady() {
 		reset();
 	});
 
+	const linesEl = document.querySelector(".lines");
 	let word: Array<HTMLElement>;
 	for (let i = 0; i < allWordEls.length; i += 5) {
 		word = [];
 
+		// let lineEl = document.createElement("div");
+		// lineEl.classList.add("line");
+		// linesEl.appendChild(lineEl);
 		for (let j = 0; j < 5; j++) {
 			word.push(allWordEls[i + j]);
+			// lineEl.appendChild(allWordEls[i + j]);
 		}
 
 		wordElsArr.push(word);
@@ -66,6 +72,16 @@ window.addEventListener(
 	},
 	true
 );
+
+const checkWord = async (word: String) => {
+	const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+	try {
+		const response = await fetch(url);
+		return response.ok;
+	} catch (error) {
+		return false;
+	}
+};
 
 async function getNewWord() {
 	const response = await fetch(
@@ -253,7 +269,13 @@ function showMessage(message: string) {
 	display.querySelector("h2").innerHTML = todaysWord;
 }
 
-function gameLoop(input: string) {
+function animate(el: HTMLElement, animation: string) {
+	el.classList.remove(animation);
+	void el.offsetWidth;
+	el.classList.add(animation);
+}
+
+async function gameLoop(input: string) {
 	if (!allowInput) {
 		return;
 	}
@@ -262,8 +284,10 @@ function gameLoop(input: string) {
 
 	switch (input) {
 		case "Enter":
-			if (currentWord.length == 5) {
-				//check word
+			if (!(await checkWord(currentWord))) {
+				let currentLineEl = wordElsArr[line][0].parentElement;
+				animate(currentLineEl, "shake");
+			} else if (currentWord.length == 5) {
 				if (checkWin()) {
 					showMessage("You guessed the word!");
 				}
@@ -286,6 +310,7 @@ function gameLoop(input: string) {
 			if (cursor < 5 && wordElsArr[line][cursor].innerHTML.length == 0) {
 				wordElsArr[line][cursor].innerHTML = input;
 				wordElsArr[line][cursor].classList.add("entered");
+				animate(wordElsArr[line][cursor], "bounce");
 
 				cursor++;
 			}
