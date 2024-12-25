@@ -259,11 +259,13 @@ function gameLoop(input) {
                     if (yield checkWin()) {
                         showMessage("You guessed the word!");
                     }
-                    cursor = 0;
-                    line++;
-                    guessedWords.push(currentWord);
-                    if (line > 5) {
-                        showMessage("You didn't guess it!");
+                    else {
+                        cursor = 0;
+                        line++;
+                        guessedWords.push(currentWord);
+                        if (line > 5) {
+                            showMessage("You didn't guess it!");
+                        }
                     }
                 }
                 break;

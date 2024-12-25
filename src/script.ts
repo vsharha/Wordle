@@ -164,7 +164,7 @@ function instancesBefore(word: string, index: number) {
 	return count;
 }
 
-function wait(ms) {
+function wait(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -303,13 +303,13 @@ async function gameLoop(input: string) {
 			} else {
 				if (await checkWin()) {
 					showMessage("You guessed the word!");
-				}
-				cursor = 0;
-				line++;
-				guessedWords.push(currentWord);
-
-				if (line > 5) {
-					showMessage("You didn't guess it!");
+				} else {
+					cursor = 0;
+					line++;
+					guessedWords.push(currentWord);
+					if (line > 5) {
+						showMessage("You didn't guess it!");
+					}
 				}
 			}
 			break;
