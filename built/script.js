@@ -65,6 +65,9 @@ window.addEventListener("keydown", function (event) {
     event.preventDefault();
 }, true);
 const checkWord = (word) => __awaiter(this, void 0, void 0, function* () {
+    if (word == todaysWord) {
+        return true;
+    }
     const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
     try {
         const response = yield fetch(url);
@@ -137,74 +140,82 @@ function instancesBefore(word, index) {
     }
     return count;
 }
+function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 function checkWin() {
-    let currentWord = getCurrentWord();
-    let lineColors = [];
-    for (let i = 0; i < 5; i++) {
-        if (currentWord[i] == todaysWord[i]) {
-            lineColors.push("correct-spot");
-        }
-        else if (todaysWord.includes(currentWord[i])) {
-            lineColors.push("wrong-spot");
-        }
-        else {
-            lineColors.push("locked");
-        }
-    }
-    let count = 0;
-    let currentInstance = 0;
-    for (let i = 0; i < 5; i++) {
-        count = 0;
-        currentInstance = 0;
-        if (lineColors[i] == "wrong-spot") {
-            for (let j = 0; j < 5; j++) {
-                if (currentWord[i] == todaysWord[j]) {
-                    count++;
-                }
+    return __awaiter(this, void 0, void 0, function* () {
+        let currentWord = getCurrentWord();
+        let lineColors = [];
+        for (let i = 0; i < 5; i++) {
+            if (currentWord[i] == todaysWord[i]) {
+                lineColors.push("correct-spot");
             }
-            for (let j = 0; j < 5; j++) {
-                if (currentWord[i] == currentWord[j]) {
-                    if (lineColors[j] == "correct-spot" ||
-                        lineColors[j] == "wrong-spot") {
-                        currentInstance++;
-                    }
-                    if (currentInstance > count) {
-                        lineColors[i] = "locked";
+            else if (todaysWord.includes(currentWord[i])) {
+                lineColors.push("wrong-spot");
+            }
+            else {
+                lineColors.push("locked");
+            }
+        }
+        let count = 0;
+        let currentInstance = 0;
+        const currentLine = wordElsArr[line];
+        for (let i = 0; i < 5; i++) {
+            count = 0;
+            currentInstance = 0;
+            if (lineColors[i] == "wrong-spot") {
+                for (let j = 0; j < 5; j++) {
+                    if (currentWord[i] == todaysWord[j]) {
+                        count++;
                     }
                 }
+                for (let j = 0; j < 5; j++) {
+                    if (currentWord[i] == currentWord[j]) {
+                        if (lineColors[j] == "correct-spot" ||
+                            lineColors[j] == "wrong-spot") {
+                            currentInstance++;
+                        }
+                        if (currentInstance > count) {
+                            lineColors[i] = "locked";
+                        }
+                    }
+                }
+                if (instancesBefore(currentWord, i) >= count) {
+                    lineColors[i] == "locked";
+                }
             }
-            if (instancesBefore(currentWord, i) >= count) {
-                lineColors[i] == "locked";
-            }
+            currentLine[i].style.background = getCSScolor(lineColors[i]);
+            animate(currentLine[i], "rotate");
+            currentLine[i].classList.add("guessed");
+            currentLine[i].classList.remove("entered");
+            yield wait(350);
         }
-        wordElsArr[line][i].style.background = getCSScolor(lineColors[i]);
-        wordElsArr[line][i].classList.add("guessed");
-        wordElsArr[line][i].classList.remove("entered");
-    }
-    let indexes = getButtonIndexes();
-    for (let i = 0; i < 5; i++) {
-        let buttonColor = keyboard[indexes[i]].style.backgroundColor;
-        if (buttonColor == getCSScolor("correct-spot")) {
-            continue;
-        }
-        else if (buttonColor == getCSScolor("wrong-spot")) {
-            if (lineColors[i] != "correct-spot") {
+        let indexes = getButtonIndexes();
+        for (let i = 0; i < 5; i++) {
+            let buttonColor = keyboard[indexes[i]].style.backgroundColor;
+            if (buttonColor == getCSScolor("correct-spot")) {
                 continue;
             }
+            else if (buttonColor == getCSScolor("wrong-spot")) {
+                if (lineColors[i] != "correct-spot") {
+                    continue;
+                }
+            }
+            keyboard[indexes[i]].style.background = getCSScolor(lineColors[i]);
+            keyboard[indexes[i]].classList.add("guessed");
         }
-        keyboard[indexes[i]].style.background = getCSScolor(lineColors[i]);
-        keyboard[indexes[i]].classList.add("guessed");
-    }
-    let correctCount = 0;
-    for (let color of lineColors) {
-        if (color == "correct-spot") {
-            correctCount++;
+        let correctCount = 0;
+        for (let color of lineColors) {
+            if (color == "correct-spot") {
+                correctCount++;
+            }
         }
-    }
-    if (correctCount == 5) {
-        return true;
-    }
-    return false;
+        if (correctCount == 5) {
+            return true;
+        }
+        return false;
+    });
 }
 function processInput(button) {
     let input = "";
@@ -239,14 +250,12 @@ function gameLoop(input) {
         let currentWord = getCurrentWord();
         switch (input) {
             case "Enter":
-                if (!(currentWord.length == 5) ||
-                    guessedWords.includes(currentWord) ||
-                    !(yield checkWord(currentWord))) {
+                if (!(currentWord.length == 5) || !(yield checkWord(currentWord))) {
                     let currentLineEl = wordElsArr[line][0].parentElement;
                     animate(currentLineEl, "shake");
                 }
                 else {
-                    if (checkWin()) {
+                    if (yield checkWin()) {
                         showMessage("You guessed the word!");
                     }
                     cursor = 0;

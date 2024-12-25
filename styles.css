@@ -38,7 +38,22 @@
 }
 
 .bounce {
-	animation: bounce 0.1s ease-in-out;
+	animation: bounce 0.3s ease-in-out;
+}
+
+@keyframes rotate {
+	0%,
+	100% {
+		transform: scaleY(1);
+	}
+
+	50% {
+		transform: scaleY(0.05);
+	}
+}
+
+.rotate {
+	animation: rotate 0.35s ease-in-out;
 }
 
 html {

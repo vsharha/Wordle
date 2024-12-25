@@ -75,6 +75,10 @@ window.addEventListener(
 );
 
 const checkWord = async (word: String) => {
+	if (word == todaysWord) {
+		return true;
+	}
+
 	const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
 	try {
 		const response = await fetch(url);
@@ -160,7 +164,11 @@ function instancesBefore(word: string, index: number) {
 	return count;
 }
 
-function checkWin() {
+function wait(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function checkWin() {
 	let currentWord = getCurrentWord();
 
 	let lineColors = [];
@@ -177,6 +185,7 @@ function checkWin() {
 
 	let count = 0;
 	let currentInstance = 0;
+	const currentLine = wordElsArr[line];
 
 	for (let i = 0; i < 5; i++) {
 		count = 0;
@@ -209,9 +218,12 @@ function checkWin() {
 			}
 		}
 
-		wordElsArr[line][i].style.background = getCSScolor(lineColors[i]);
-		wordElsArr[line][i].classList.add("guessed");
-		wordElsArr[line][i].classList.remove("entered");
+		currentLine[i].style.background = getCSScolor(lineColors[i]);
+		animate(currentLine[i], "rotate");
+		currentLine[i].classList.add("guessed");
+		currentLine[i].classList.remove("entered");
+
+		await wait(350);
 	}
 
 	let indexes = getButtonIndexes();
@@ -285,15 +297,11 @@ async function gameLoop(input: string) {
 
 	switch (input) {
 		case "Enter":
-			if (
-				!(currentWord.length == 5) ||
-				guessedWords.includes(currentWord) ||
-				!(await checkWord(currentWord))
-			) {
+			if (!(currentWord.length == 5) || !(await checkWord(currentWord))) {
 				let currentLineEl = wordElsArr[line][0].parentElement;
 				animate(currentLineEl, "shake");
 			} else {
-				if (checkWin()) {
+				if (await checkWin()) {
 					showMessage("You guessed the word!");
 				}
 				cursor = 0;
