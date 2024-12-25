@@ -218,12 +218,12 @@ async function checkWin() {
 			}
 		}
 
-		currentLine[i].style.background = getCSScolor(lineColors[i]);
 		animate(currentLine[i], "rotate");
-		currentLine[i].classList.add("guessed");
+		await wait(175);
 		currentLine[i].classList.remove("entered");
-
-		await wait(350);
+		currentLine[i].style.background = getCSScolor(lineColors[i]);
+		currentLine[i].classList.add("guessed");
+		await wait(175);
 	}
 
 	let indexes = getButtonIndexes();

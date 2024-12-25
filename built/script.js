@@ -185,11 +185,12 @@ function checkWin() {
                     lineColors[i] == "locked";
                 }
             }
-            currentLine[i].style.background = getCSScolor(lineColors[i]);
             animate(currentLine[i], "rotate");
-            currentLine[i].classList.add("guessed");
+            yield wait(175);
             currentLine[i].classList.remove("entered");
-            yield wait(350);
+            currentLine[i].style.background = getCSScolor(lineColors[i]);
+            currentLine[i].classList.add("guessed");
+            yield wait(175);
         }
         let indexes = getButtonIndexes();
         for (let i = 0; i < 5; i++) {
