@@ -58,6 +58,7 @@
 }
 
 .github {
+	font-family: "Noto Sans", serif;
 	margin: 2rem 0;
 	display: flex;
 	flex-direction: column;
@@ -84,7 +85,6 @@
 }
 
 .github a div {
-	font-family: "Noto Sans", serif;
 	font-weight: 600;
 	display: flex;
 	flex-direction: row;
