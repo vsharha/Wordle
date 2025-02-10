@@ -57,6 +57,10 @@
 	animation: rotate 0.35s ease-in-out;
 }
 
+footer {
+	position: relative;
+}
+
 .github * {
 	font-family: "Noto Sans", serif;
 }
@@ -75,12 +79,19 @@
 	width: fit-content;
 }
 
-.github p {
+.github div p {
 	margin-top: 0.8rem;
 	color: black;
 	text-align: center;
-	font-size: 1.2rem;
+	font-size: 1.4rem;
 	width: 100%;
+}
+
+.github p a,
+.github p a:visited {
+	color: rgb(62, 62, 255);
+	text-decoration: underline;
+	font-size: inherit;
 }
 
 .github a div:hover {
@@ -93,7 +104,7 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
-	background-color: black;
+	background-image: linear-gradient(black, rgb(53, 53, 53));
 	color: white;
 	text-align: center;
 	padding: 1.2rem;
@@ -128,9 +139,11 @@ html {
 }
 
 header {
+	position: relative;
 	margin: auto;
 	margin-bottom: 2rem;
 }
+
 header h1 {
 	padding: 1rem;
 	text-align: center;
@@ -287,6 +300,10 @@ button:hover {
 	* {
 		font-size: 0.6rem;
 	}
+	.github div {
+		scale: 110%;
+		margin: 1rem 0;
+	}
 	html {
 		overflow: scroll;
 	}
@@ -312,8 +329,6 @@ button:hover {
 	.lines {
 		padding: none;
 		margin: none;
-	}
-	#message {
 	}
 	#message h1 {
 		font-size: 2.5rem;
